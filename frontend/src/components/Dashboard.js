@@ -6,14 +6,6 @@ import { useNavigate } from 'react-router-dom';
 const Dashboard = () => {
     const history = useNavigate();
 
-    useEffect(() => {
-      const isLoggedIn = localStorage.getItem('isLoggedIn');
-  
-      if (!isLoggedIn) {
-        window.location.href = '/'; // Ganti dengan rute login Anda
-      }
-    }, []);
-
     return (
       <main class="content">
         <div class="container-fluid p-0">

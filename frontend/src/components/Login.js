@@ -3,42 +3,27 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
-  const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const history = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:8000/api/login', formData);
-      console.log(response.data);
+      const response = await axios.post('/confirmation', { username, password });
 
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('role', response.data.role);
-
-      navigate('/dashboard'); 
+      if (response.data.success) {
+        setMessage('Login successful');
+      } else {
+        setMessage('Invalid credentials');
+      }
     } catch (error) {
-      console.error(error);
+      console.error('Error:', error);
+      setMessage('An error occurred');
     }
   };
-
-  // const handleLogout = async () => {
-  //     try {
-  //         const response = await axios.post('http://localhost:8000/api/logout');
-  //         console.log(response.data);
-  //     } catch (error) {
-  //         console.error(error);
-  //     }
-  // };
 
   return (
     <main className="d-flex w-100">
@@ -59,18 +44,18 @@ function Login() {
                     <form onSubmit={handleSubmit}>
                       <div className="mb-3">
                         <label className="form-label">Email</label>
-                        <input className="form-control form-control-lg" type="email" name="email" placeholder="Enter your email" value={formData.email} onChange={handleInputChange} />
+                        <input className="form-control form-control-lg" type="email" name="email" placeholder="Enter your email" value={username} onChange={(e) => setUsername(e.target.value)} />
                       </div>
                       <div className="mb-3">
                         <label className="form-label">Password</label>
-                        <input className="form-control form-control-lg" type="password" name="password" placeholder="Enter your password" value={formData.password} onChange={handleInputChange} />
+                        <input className="form-control form-control-lg" type="password" name="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} />
                       </div>
-                      {/* <div>
+                      <div>
                         <div className="form-check align-items-center">
                           <input id="customControlInline" type="checkbox" className="form-check-input" value="remember-me" name="remember-me" checked />
                           <label className="form-check-label text-small" htmlFor="customControlInline">Remember me</label>
                         </div>
-                      </div> */}
+                      </div>
                       <div className="d-grid gap-2 mt-3">
                         <button type="submit" className="btn btn-lg btn-primary">Sign in</button>
                       </div>

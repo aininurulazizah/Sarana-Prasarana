@@ -11,6 +11,7 @@ import Dashboard from './components/Dashboard.js';
 import KAK from './components/KAK.js';
 import ProgramKerja from './components/ProgramKerja.js';
 import PeminjamanSarpras from './components/PeminjamanSarpras.js';
+import AddDataSarpras from './components/AddDataSarpras.js';
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
           <>
             <Login />
           </>
-        }/>
+        } />
         <Route path="/dashboard" element={
           <div className="wrapper">
             <Sidebar />
@@ -30,7 +31,7 @@ function App() {
               <Footer />
             </div>
           </div>
-        }/>
+        } />
         <Route path="/kak" element={
           <div className="wrapper">
             <Sidebar />
@@ -40,7 +41,7 @@ function App() {
               <Footer />
             </div>
           </div>
-        }/>
+        } />
         <Route path="/program-kerja" element={
           <div className="wrapper">
             <Sidebar />
@@ -50,7 +51,7 @@ function App() {
               <Footer />
             </div>
           </div>
-        }/>
+        } />
         <Route path="/pergerakan" element={
           <div className="wrapper">
             <Sidebar />
@@ -60,7 +61,7 @@ function App() {
               <Footer />
             </div>
           </div>
-        }/>
+        } />
         <Route path="/peminjaman-sarpras" element={
           <div className="wrapper">
             <Sidebar />
@@ -70,11 +71,21 @@ function App() {
               <Footer />
             </div>
           </div>
-        }/>
+        } />
+        <Route path="/add-data-sarpras" element={
+          <div className="wrapper">
+            <Sidebar />
+            <div className="main">
+              <Navbar />
+              <AddDataSarpras />
+              <Footer />
+            </div>
+          </div>
+        } />
       </Routes>
     </BrowserRouter>
   );
 }
 
-export default App; 
+export default App;
 

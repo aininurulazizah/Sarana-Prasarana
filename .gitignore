@@ -1,0 +1,2 @@
+# Direktori node_modules tidak akan diikutsertakan
+/node_modules

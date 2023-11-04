@@ -1,0 +1,5 @@
+.custom-large-input {
+    font-size: 1em; /* Menggunakan unit relatif */
+    padding: 1em 1em; /* Menggunakan unit relatif */
+    height: 2em; /* Menggunakan unit relatif */
+}
