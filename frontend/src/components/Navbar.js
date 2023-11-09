@@ -4,19 +4,32 @@ import { useNavigate } from 'react-router-dom';
 import feather from 'feather-icons';
 
 const Navbar = () => {
+	const navigate = useNavigate();
     useEffect(() => {
         feather.replace(); // Replace the icons after component mounts
     }, []);
 
+	const handleLogout = async (e) => {
+		e.preventDefault();
+
+		try {
+		  await axios.post('/api/auth/logout');
+		  localStorage.removeItem('token');
+		  navigate('/'); // Redirect ke halaman login setelah logout
+		} catch (error) {
+		  console.error('Error logging out:', error);
+		}
+	  };	  
+
     return (
         <nav className="navbar navbar-expand navbar-light navbar-bg">
             <a className="sidebar-toggle js-sidebar-toggle">
-                <i className="hamburger align-self-center"></i>
+                <i className="hamburger align-self-center ms-2"></i>
             </a>
 
             <div class="navbar-collapse collapse">
 					<ul class="navbar-nav navbar-align">
-						<li class="nav-item dropdown">
+						{/* <li class="nav-item dropdown">
 							<a class="nav-icon dropdown-toggle" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
 								<div class="position-relative">
 									<i class="align-middle" data-feather="bell"></i>
@@ -147,7 +160,7 @@ const Navbar = () => {
 									<a href="#" class="text-muted">Show all messages</a>
 								</div>
 							</div>
-						</li>
+						</li> */}
 						<li class="nav-item dropdown">
 							<a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-bs-toggle="dropdown">
                 <i class="align-middle" data-feather="settings"></i>
@@ -163,11 +176,12 @@ const Navbar = () => {
 								<a class="dropdown-item" href="index.html"><i class="align-middle me-1" data-feather="settings"></i> Settings & Privacy</a>
 								<a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="help-circle"></i> Help Center</a>
 								<div class="dropdown-divider"></div>
-								<a class="dropdown-item" href="#">Log out</a>
+								<a class="dropdown-item" href="" onClick={handleLogout}>Log out</a>
+								{/* <button onClick={handleLogout}>Logout</button> */}
 							</div>
 						</li>
 					</ul>
-				</div>
+			</div>
         </nav>
     );
 };
