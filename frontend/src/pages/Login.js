@@ -23,8 +23,14 @@ function Login() {
       const response = await axios.post('/api/auth/login', formData);
       localStorage.setItem('token', response.data.access_token);
       localStorage.setItem('role', response.data.user.role);
+      localStorage.setItem('idUser', response.data.user.id_user);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
       console.log('Login berhasil');
-      console.log(response.data.user);
+      
+      // console.log(response.data.user);
+      const user = JSON.parse(localStorage.getItem('user'));
+      console.log("id_user: ", user.id_user);
+      console.log(user);
       navigate('/dashboard');
     } catch (error) {
       console.error(error);

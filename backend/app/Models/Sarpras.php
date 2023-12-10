@@ -15,7 +15,9 @@ class Sarpras extends Model
         'nama_sarpras',
         'deskripsi',
         'daya_tampung',
-        'gambar_sarpras'
+        'gambar_sarpras',
+        'link_gambar',
+        'status_peminjaman'
     ];
 
     public function inventaris()

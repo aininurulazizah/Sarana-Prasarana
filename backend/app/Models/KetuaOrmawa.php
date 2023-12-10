@@ -32,4 +32,8 @@ class KetuaOrmawa extends Model
     {
         return $this->hasOne(Ormawa::class, 'id_ormawa', 'id_ormawa');
     }
+
+    public function kak(){
+        return $this->hasOne(KAK::class, 'id_ketua');
+    }
 }

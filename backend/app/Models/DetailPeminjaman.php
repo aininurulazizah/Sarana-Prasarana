@@ -12,7 +12,12 @@ class DetailPeminjaman extends Model
     protected $table = 'detail_peminjaman';
     protected $primaryKey = 'id_detail';
     protected $fillable = [
-        'jenis_peminjaman'
+        'id_peminjaman',
+        'jenis_peminjaman',
+        'id_sarpras',
+        'id_inventaris',
+        'waktu_mulai',
+        'waktu_selesai'
     ];
 
     public function sarpras()

@@ -2,54 +2,164 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import feather from 'feather-icons';
 import 'bootstrap/dist/js/bootstrap.bundle';
+import AccModal from '../components/Modals/AccModal';
 import EditKAKModal from '../components/Modals/EditKAKModal';
-import FileKAKModal from '../components/Modals/FileKAKModal';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 
 // Using Arrow Function
-const KAK = () => {
+const KAKAdmin = () => {
     const [kaks, setKaks] = useState([]);
+    const [showAccModal, setShowAccModal] = useState(false);
+    const [selectedKakId, setSelectedKakId] = useState(null);
+    const [selectedStatus, setSelectedStatus] = useState(null);
 
-    useEffect(() => {
+    const role = localStorage.getItem('role');
+
+    const handleShowAccModal = (kakId, status) => {
+        setSelectedKakId(kakId);
+        setSelectedStatus(status);
+        setShowAccModal(true);
+    }
+
+    const handleAccSubmit = (catatan) => {
+        // Lakukan sesuatu dengan catatan
+        console.log('Catatan:', catatan);
+    }
+
+    const fetchData = () => {
         axios.get('/api/kak')
         .then(response => {
-            setKaks(response.data);
+            if (role === "sekumbem"){
+                const filteredKaks = response.data.filter(kak => kak.status === 'Diajukan' || kak.status === 'Revisi tahap 1' || kak.status === 'Tolak tahap 1');
+                setKaks(filteredKaks);
+            } else if (role === "kli"){
+                const filteredKaks = response.data.filter(kak => kak.status === 'Acc tahap 1' || kak.status === 'Revisi tahap 2' || kak.status === 'Tolak tahap 2');
+                setKaks(filteredKaks);
+            } else if (role === "wd3"){
+                const filteredKaks = response.data.filter(kak => kak.status === 'Acc tahap 2' || kak.status === 'Revisi tahap Akhir' || kak.status === 'Tolak tahap akhir');
+                setKaks(filteredKaks);
+            } else if (role === "admin"){
+                setKaks(response.data);
+            }
         })
         .catch(error => {
             console.error('Error fetching KAK data:', error);
         });
+      };
+
+    useEffect(() => {
+        fetchData();
         feather.replace();
     }, []);
 
-    const navigate = useNavigate();
+    const renderButton = (kak) => {
+        if (role === 'sekumbem') {
+            return (
+                <div>
+                    <button
+                        className="btn btn-primary mt-2"
+                        style={{ marginRight: '5px' }}
+                        data-bs-toggle="modal"
+                        data-bs-target="#pesanModal"
+                        onClick={() => handleShowAccModal(kak, "acc")}
+                    >
+                        <i className="align-middle" data-feather="check"></i> Acc
+                    </button>
+                    <button
+                        className="btn btn-warning mt-2"
+                        style={{ marginRight: '5px' }}
+                        data-bs-toggle="modal"
+                        data-bs-target="#pesanModal"
+                        onClick={() => handleShowAccModal(kak, "revisi")}
+                    >
+                        <i className="align-middle" data-feather="edit"></i> Revisi
+                    </button>
+                    <button
+                        className="btn btn-danger mt-2"
+                        style={{ marginRight: '5px' }}
+                        data-bs-toggle="modal"
+                        data-bs-target="#pesanModal"
+                        onClick={() => handleShowAccModal(kak, "tolak")}
+                    >
+                        <i className="align-middle" data-feather="trash"></i> Tolak
+                    </button>
+                </div>
+            );
+        } else if (role === 'kli') {
+            return (
+                <div>
+                    <button
+                        className="btn btn-primary mt-2"
+                        style={{ marginRight: '5px' }}
+                        data-bs-toggle="modal"
+                        data-bs-target="#pesanModal"
+                        onClick={() => handleShowAccModal(kak, "acc")}
+                    >
+                        <i className="align-middle" data-feather="check"></i> Acc
+                    </button>
+                    <button
+                        className="btn btn-warning mt-2"
+                        style={{ marginRight: '5px' }}
+                        data-bs-toggle="modal"
+                        data-bs-target="#pesanModal"
+                        onClick={() => handleShowAccModal(kak, "revisi")}
+                    >
+                        <i className="align-middle" data-feather="edit"></i> Revisi
+                    </button>
+                    <button
+                        className="btn btn-danger mt-2"
+                        style={{ marginRight: '5px' }}
+                        data-bs-toggle="modal"
+                        data-bs-target="#pesanModal"
+                        onClick={() => handleShowAccModal(kak, "tolak")}
+                    >
+                        <i className="align-middle" data-feather="trash"></i> Tolak
+                    </button>
+                </div>
+            );
+        } else if (role === 'wd3') {
+            return (
+                <div>
+                    <button
+                        className="btn btn-primary mt-2"
+                        style={{ marginRight: '5px' }}
+                        data-bs-toggle="modal"
+                        data-bs-target="#pesanModal"
+                        onClick={() => handleShowAccModal(kak, "acc")}
+                    >
+                        <i className="align-middle" data-feather="check"></i> Acc
+                    </button>
+                    <button
+                        className="btn btn-warning mt-2"
+                        style={{ marginRight: '5px' }}
+                        data-bs-toggle="modal"
+                        data-bs-target="#pesanModal"
+                        onClick={() => handleShowAccModal(kak, "revisi")}
+                    >
+                        <i className="align-middle" data-feather="edit"></i> Revisi
+                    </button>
+                    <button
+                        className="btn btn-danger mt-2"
+                        style={{ marginRight: '5px' }}
+                        data-bs-toggle="modal"
+                        data-bs-target="#pesanModal"
+                        onClick={() => handleShowAccModal(kak, "tolak")}
+                    >
+                        <i className="align-middle" data-feather="trash"></i> Tolak
+                    </button>
+                </div>
+            );
+        } else {
+            return (
+                <div>
+                    <p>-</p>
+                </div>
+            );
+        }
 
-    const [showModal, setShowModal] = useState(false);
-    const [pdfUrl, setPdfUrl] = useState('');
-
-    const handleShowModal = () => {
-        setShowModal(true);
-        setPdfUrl('/test.pdf')
-    };
-
-    const handleUpload = () => {
-        navigate('/upload-kak');
-    };
-
-    const handleDelete = async () => {
-        const confirmDelete = await Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: 'Anda akan menghapus data ini',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            cancelButtonText : 'Batal',
-            confirmButtonText: 'Ya, hapus!'
-        });
+        return null; 
     }
-
-    
 
     return (
       <main class="content">
@@ -83,12 +193,14 @@ const KAK = () => {
                         {kaks.map((kak, index) => (
                             <tr key={index}>
                             <td>{index + 1}</td>
-                            <td>{kak.id_ketua}</td>
-                            <td>{kak.id_ketua}</td>
+                            <td>{kak.ketua_ormawa.ormawa.nama_ormawa}</td>
+                            <td>{kak.ketua_ormawa.nama_ketua}</td>
                             <td>
                                 <a href={`/storage/${kak.file_kak}`} target="_blank" rel="noopener noreferrer">Dokumen KAK</a>
                             </td>
-                            <td>{kak.file_rab}</td>
+                            <td>
+                                <a href={`/storage/${kak.file_rab}`} target="_blank" rel="noopener noreferrer">Dokumen RAB</a>
+                            </td>
                             <td>{kak.status}</td>
                             <td>{kak.catatan}</td>
                             <td>
@@ -105,12 +217,37 @@ const KAK = () => {
                                 ))}
                             </td>
                             <td>
-                                <button class="btn btn-primary mt-2" onClick={handleShowModal} data-bs-toggle="modal" data-bs-target="#editKAKModal" style={{marginRight: '5px'}}><i className="align-middle" data-feather="check"></i> Acc</button>
-                                <button class="btn btn-warning mt-2" onClick={handleShowModal} data-bs-toggle="modal" data-bs-target="#editKAKModal" style={{marginRight: '5px'}}><i className="align-middle" data-feather="edit"></i> Revisi</button>
-                                <button class="btn btn-danger mt-2" onClick={handleShowModal} data-bs-toggle="modal" data-bs-target="#editKAKModal" style={{marginRight: '5px'}}><i className="align-middle" data-feather="trash"></i> Tolak</button>
+                                {renderButton(kak.id_kak)}
+                                {/* <button
+                                    className="btn btn-primary mt-2"
+                                    style={{ marginRight: '5px' }}
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#pesanModal"
+                                    onClick={() => handleShowAccModal(kak.id_kak, "acc")}
+                                >
+                                <i className="align-middle" data-feather="check"></i> Acc
+                                </button>
+                                <button
+                                    className="btn btn-warning mt-2"
+                                    style={{ marginRight: '5px' }}
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#pesanModal"
+                                    onClick={() => handleShowAccModal(kak.id_kak, "revisi")}
+                                >
+                                <i className="align-middle" data-feather="edit"></i> Revisi
+                                </button>
+                                <button
+                                    className="btn btn-danger mt-2"
+                                    style={{ marginRight: '5px' }}
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#pesanModal"
+                                    onClick={() => handleShowAccModal(kak.id_kak, "tolak")}
+                                >
+                                <i className="align-middle" data-feather="trash"></i> Tolak
+                                </button> */}
                             </td>
                             </tr>
-                        ))}
+                        ))} 
                         </tbody>
                     </table>
                     </div>
@@ -119,8 +256,9 @@ const KAK = () => {
             </div>
           </div>
         </div>
+        <AccModal showModal={showAccModal} setShowModal={setShowAccModal} handleSubmit={handleAccSubmit} selectedKakId={selectedKakId} selectedStatus={selectedStatus} reloadData={fetchData}/>
       </main>
     );
 };
 
-export default KAK;
+export default KAKAdmin;

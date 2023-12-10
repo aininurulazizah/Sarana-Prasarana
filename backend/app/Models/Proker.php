@@ -21,7 +21,10 @@ class Proker extends Model
         'catatan',
         'file_proposal',
         'file_rab',
-        'izin_submit'
+        'izin_submit',
+        'jenis_kegiatan',
+        'izin_submit',
+        'jenis_kegiatan',
     ];
 
     public function kak(){

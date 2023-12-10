@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\KetuaOrmawa;
+use App\Models\User;
 
 class KetuaOrmawaController extends Controller
 {
@@ -12,9 +13,9 @@ class KetuaOrmawaController extends Controller
      *
      * @return void
      */
-    public function __construct() {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
-    }
+    // public function __construct() {
+    //     $this->middleware('auth:api', ['except' => ['login', 'register']]);
+    // }
 
     /**
      * Get ketua ormawa
@@ -92,4 +93,34 @@ class KetuaOrmawaController extends Controller
 
         return response()->json(['message' => 'Data deleted successfully'], 204);
     }
+
+    public function getUser($id)
+    {
+        $User = User::find($id);
+
+        if (!$User) {
+            return response()->json(['message' => 'Data not found'], 404);
+        }
+
+        return response()->json(['data' => $User], 200);
+    }
+
+    /**
+     * Get ketua ormawa by user id
+     *
+     * @param  int  $id_pengguna
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getByUserId($id_pengguna)
+    {
+        $ketuaOrmawa = KetuaOrmawa::where('id_pengguna', $id_pengguna)->first();
+
+        if (!$ketuaOrmawa) {
+            return response()->json(['message' => 'Data not found'], 404);
+        }
+
+        return response()->json(['data' => $ketuaOrmawa], 200);
+    }
+
+
 }

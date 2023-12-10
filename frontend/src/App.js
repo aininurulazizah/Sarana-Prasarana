@@ -17,6 +17,11 @@ import Pengumuman from './pages/Pengumuman.js';
 import KalenderAkademik from './pages/KalenderAkademik.js';
 import UploadKAK from './components/SubMenu/UploadKAK.js';
 
+import PengelolaanSarpras from './pages/PengelolaanSarpras.js';
+import ListPengajuan from './pages/ListPengajuan.js';
+import PengajuanSarpras from './components/SubMenu/PengajuanSarpras.js';
+import ReviewPengajuan from './components/SubMenu/ReviewPengajuan.js';
+
 function checkAuthorization() {
   const token = localStorage.getItem('token');
   console.log("token lokal:", token);
@@ -155,6 +160,54 @@ function App() {
               <Footer />
             </div>
           </div>
+        }/>
+        <Route path="/pengelolaan-sarana-prasarana" element={
+          <ProtectedRoute>
+            <div className="wrapper">
+              <Sidebar />
+              <div className="main">
+                <Navbar />
+                <PengelolaanSarpras />
+                <Footer />
+              </div>
+            </div>
+          </ProtectedRoute>
+        }/>
+        <Route path="/peminjaman-sarpras-pengajuan" element={
+          <ProtectedRoute>
+            <div className="wrapper">
+              <Sidebar />
+              <div className="main">
+                <Navbar />
+                <PengajuanSarpras />
+                <Footer />
+              </div>
+            </div>
+          </ProtectedRoute>
+        }/>
+        <Route path="/review-pengajuan" element={
+          <ProtectedRoute>
+            <div className="wrapper">
+              <Sidebar />
+              <div className="main">
+                <Navbar />
+                <ReviewPengajuan />
+                <Footer />
+              </div>
+            </div>
+          </ProtectedRoute>
+        }/>
+        <Route path="/list-pengajuan" element={
+          <ProtectedRoute>
+            <div className="wrapper">
+              <Sidebar />
+              <div className="main">
+                <Navbar />
+                <ListPengajuan />
+                <Footer />
+              </div>
+            </div>
+          </ProtectedRoute>
         }/>
       </Routes>
     </BrowserRouter>

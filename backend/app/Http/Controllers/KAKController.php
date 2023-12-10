@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\KAK;
 use App\Models\Proker;
+use App\Models\KetuaOrmawa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 class KAKController extends Controller
@@ -13,15 +14,15 @@ class KAKController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => []]);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api', ['except' => []]);
+    // }
 
     // Method for handling HTTP GET requests to show one data
     public function index()
     {
-        $kaks = KAK::with('prokers')->get();
+        $kaks = KAK::with('prokers', 'ketua_ormawa', 'ketua_ormawa.ormawa')->get();
 
         if ($kaks->isEmpty()) {
             return response()->json(['message' => 'No KAKs found'], 404);
@@ -129,5 +130,23 @@ class KAKController extends Controller
         }
         $kak->delete();
         return response()->json(['message' => 'KAK deleted'], 200);
-    }    
+    }  
+    
+    /**
+     * Get KAK by ketua's ID
+     *
+     * @param  int  $id_ketua
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getByKetuaId($id_ketua)
+    {
+        $kak = KAK::where('id_ketua', $id_ketua)->with('prokers')->get();
+
+        if ($kak->isEmpty()) {
+            return response()->json(['message' => 'No KAKs found for the given ketua ID'], 404);
+        }
+
+        return response()->json($kak, 200);
+    }
+
 }

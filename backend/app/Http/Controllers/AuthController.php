@@ -3,6 +3,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\KetuaOrmawa;
+use App\Models\Ormawa;
 use Validator;
 
 class AuthController extends Controller
@@ -66,6 +68,24 @@ class AuthController extends Controller
         auth()->logout();
         return response()->json(['message' => 'User successfully signed out']);
     }
+
+    /**
+     * get Data Ketua
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getKetuaOrmawa($id) {
+        $KetuaOrmawa = KetuaOrmawa::where('id_pengguna', $id)->first();
+        $id_ormawa = $KetuaOrmawa->ormawa->id_ormawa;
+        $Ormawa = Ormawa::where('id_ormawa', $id_ormawa)->first();
+
+        if (!$KetuaOrmawa) {
+            return response()->json(['message' => 'Data not found'], 404);
+        }
+
+        return response()->json(['data' => $KetuaOrmawa], 200);
+    }
+
     /**
      * Refresh a token.
      *

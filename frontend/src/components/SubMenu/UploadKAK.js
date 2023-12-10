@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import feather from 'feather-icons';
+import { useNavigate } from 'react-router-dom';
 
 const UploadKAK = ({ }) => {
+    const navigate = useNavigate();
     const [role, setRole] = useState(null);
     useEffect(() => {
         feather.replace(); 
@@ -12,21 +14,35 @@ const UploadKAK = ({ }) => {
 
     const [proker, setProker] = useState([
         {
-            namaKegiatan: '',
-            ketuaPelaksana: '',
-            jenisKegiatan: ''
+            id_kak: null,
+            nama_kegiatan: '',
+            ketua_pelaksana: '',
+            jenis_kegiatan: '',
+            deskripsi_kegiatan: '',
+            izin_submit: 'false',
+            tanggal_mulai: '',
+            tanggal_akhir: '',
+            status: '',
+            catatan: ''
         }
     ]);
     const [formData, setFormData] = useState({ 
-        namaOrmawa: role,
-        fileKAK: null,
-        fileRAB: null,
-        proker: []
+        id_ketua : null,
+        file_kak: null,
+        file_rab: null,
+        prokers: []
     });
     
     const handleInputChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+        if (e.target.name === 'id_ketua') {
+          // Menggunakan parseInt untuk mengonversi ke tipe integer
+          setFormData({ ...formData, [e.target.name]: parseInt(e.target.value, 10) });
+        } else {
+          // Jika field bukan 'id_ketua', maka tetapkan nilainya sebagai string
+          setFormData({ ...formData, [e.target.name]: e.target.value });
+        }
+      };
+      
 
     const handleProkerChange = (e, index) => {
         let data = [...proker];
@@ -34,21 +50,44 @@ const UploadKAK = ({ }) => {
         setProker(data);
     };
     
-    const handleSubmit = (e) => {
+    const submit = (e) => {
       e.preventDefault();
-      formData.namaOrmawa = role;
-      formData.proker = proker;
+      
       console.log(formData);
       feather.replace();
     };
 
+    const handleSubmit = async (e) => {
+        formData.prokers = proker;
+        e.preventDefault();
+        console.log(formData);
+        axios.post('/api/kak/', formData)
+            .then((res) => {
+                console.log(res);
+                alert("KAK berhasil diupload");
+                navigate('/kak');
+            })
+            .catch((err) => {
+                console.log(err);
+                alert("KAK gagal diupload");
+            });
+    };
+
     const addInputRow = () => {
         let object = {
-            namaKegiatan: '',
-            ketuaPelaksana: '',
-            jenisKegiatan: ''
+            id_kak: null,
+            nama_kegiatan: '',
+            ketua_pelaksana: '',
+            jenis_kegiatan: '',
+            deskripsi_kegiatan: '',
+            izin_submit: 'false',
+            tanggal_mulai: '',
+            tanggal_akhir: '',
+            status: '',
+            catatan: ''
         };
         setProker([...proker, object]);
+        feather.replace();
     };
 
     const handleDeleteRow = (index) => {
@@ -60,7 +99,7 @@ const UploadKAK = ({ }) => {
     return (
         <main class="content">
             <div class="container-fluid p-0">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={submit}>
                     <div className="mb-3">
                         <label htmlFor="namaOrmawa" className="form-label">Nama ORMAWA</label>
                         <input
@@ -70,7 +109,19 @@ const UploadKAK = ({ }) => {
                             id="namaOrmawa"
                             name="namaOrmawa"
                             placeholder="ORMAWA"
-                            value={formData.namaOrmawa}
+                            value={role}
+                            onChange={(e) => handleInputChange(e)}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="idKetua" className="form-label">ID Ketua</label>
+                        <input
+                            type="number"
+                            className="form-control"
+                            id="idKetua"
+                            name="id_ketua"
+                            placeholder="Id Ketua"
+                            value={formData.id_ketua}
                             onChange={(e) => handleInputChange(e)}
                         />
                     </div>
@@ -80,8 +131,9 @@ const UploadKAK = ({ }) => {
                             type="file"
                             className="form-control"
                             id="fileKAK"
-                            name="fileKAK"
+                            name="file_kak"
                             onChange={(e) => handleInputChange(e)}
+                            required
                         />
                     </div>
                     <div className="mb-3">
@@ -90,8 +142,9 @@ const UploadKAK = ({ }) => {
                             type="file"
                             className="form-control"
                             id="fileRAB"
-                            name="fileRAB"
+                            name="file_rab"
                             onChange={(e) => handleInputChange(e)}
+                            required
                         />
                     </div>
                     <div id='dynamic-inputs' className="mb-3">
@@ -106,34 +159,53 @@ const UploadKAK = ({ }) => {
                         <div id='input-proker'>
                             {proker.map((proker, index) => (
                                 <div className='row mb-3' key={index}>
-                                    <div className="col-sm-4">
+                                    <div className="col-sm-2">
                                         <input
                                             type="text"
                                             className="form-control"
-                                            name="namaKegiatan"
+                                            name="nama_kegiatan"
                                             placeholder="Nama Kegiatan"
                                             onChange={(e) => handleProkerChange(e, index)}
-                                            value={proker.namaKegiatan}
+                                            value={proker.nama_kegiatan}
+                                            required
                                         />
                                     </div>
-                                    <div className="col-sm-4">
+                                    <div className="col-sm-2">
                                         <input
                                             type="text"
                                             className="form-control"
-                                            name="ketuaPelaksana"
+                                            name="ketua_pelaksana"
                                             placeholder="Ketua Pelaksana"
                                             onChange={(e) => handleProkerChange(e, index)}
-                                            value={proker.ketuaPelaksana}
+                                            value={proker.ketua_pelaksana}
+                                            required
                                         />
                                     </div>
                                     <div className="col-sm-3">
-                                        <input
-                                            type="text"
+                                    <select
+                                        className="form-select"
+                                        name="jenis_kegiatan"
+                                        onChange={(e) => handleProkerChange(e, index)}
+                                        value={proker.jenis_kegiatan}
+                                        required
+                                    >
+                                        <option value="" disabled>Jenis Kegiatan</option>
+                                        <option value="Karakter">Karakter</option>
+                                        <option value="Penalaran/Keilmuan">Penalaran/Keilmuan</option>
+                                        <option value="Peminatan">Peminatan</option>
+                                        <option value="Pengabdian">Pengabdian</option>
+                                    </select>
+
+                                    </div>
+                                    <div className="col-sm-4">
+                                        <textarea
+                                            rows="1"
                                             className="form-control"
-                                            name="jenisKegiatan"
-                                            placeholder="Jenis kegiatan"
+                                            name="deskripsi_kegiatan"
+                                            placeholder="Deskripsi kegiatan"
                                             onChange={(e) => handleProkerChange(e, index)}
-                                            value={proker.jenisKegiatan}
+                                            value={proker.deskripsi_kegiatan}
+                                            required
                                         />
                                     </div>
                                     <div className='col-sm-1'>

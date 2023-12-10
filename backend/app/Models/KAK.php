@@ -21,4 +21,8 @@ class KAK extends Model
     public function prokers(){
         return $this->hasMany(Proker::class, 'id_kak'); // Assuming 'id_kak' is the foreign key in the Proker model
     }
+
+    public function ketua_ormawa(){
+        return $this->belongsTo(KetuaOrmawa::class, 'id_ketua', 'id_ketua');
+    }
 }
